@@ -1,21 +1,30 @@
 # Ecommerce Data Engineering Pipeline
 
-This project demonstrates a simple data engineering pipeline.
+This project demonstrates a simple end-to-end data engineering pipeline.
 
-Tools Used
+Technologies Used
 - Python
 - SQL
-- Databricks
 - Snowflake
+- Databricks (concept simulation)
 
-Pipeline Architecture
+Pipeline Steps
+1. Data generation using Python
+2. Data ingestion
+3. Data transformation
+4. Loading into Snowflake
+5. Running SQL analytics queries
 
-Raw Data → Python Processing → Databricks Transformation → Snowflake Data Warehouse → SQL Analytics
+Project Structure
 
-Steps
+data/
+Raw dataset
 
-1 Generate raw ecommerce data
-2 Clean and process data
-3 Upload data to Databricks
-4 Run SQL transformations
-5 Store analytics tables in Snowflake
+ingestion/
+Python scripts to generate data
+
+transformation/
+Python scripts to clean data
+
+warehouse/
+SQL scripts for tables and queries
