@@ -1,37 +1,69 @@
 import streamlit as st
 import pandas as pd
-import plotly.express as px
+import snowflake.connector
+import os
+from dotenv import load_dotenv
 
-# Load data
-df = pd.read_csv("data/orders_raw.csv")
+# Load environment variables
+load_dotenv()
 
-# Page title
-st.title("Ecommerce Data Engineering Dashboard")
+st.title("E-Commerce Sales Dashboard")
 
-# Metrics
-total_orders = len(df)
-total_revenue = (df["price"] * df["quantity"]).sum()
+# Snowflake connection
+conn = snowflake.connector.connect(
+    user=os.getenv("SNOWFLAKE_USER"),
+    password=os.getenv("SNOWFLAKE_PASSWORD"),
+    account=os.getenv("SNOWFLAKE_ACCOUNT"),
+    warehouse=os.getenv("SNOWFLAKE_WAREHOUSE"),
+    database=os.getenv("SNOWFLAKE_DATABASE"),
+    schema=os.getenv("SNOWFLAKE_SCHEMA")
+)
 
-st.metric("Total Orders", total_orders)
+# Query data
+cur = conn.cursor()
+cur.execute("SELECT * FROM ORDERS")
+
+df = pd.DataFrame(cur.fetchall(), columns=[x[0] for x in cur.description])
+
+st.subheader("Raw Orders Data")
+st.dataframe(df)
+
+# Revenue column
+df["REVENUE"] = df["PRICE"] * df["QUANTITY"]
+
+# Sidebar filter
+cities = st.sidebar.multiselect(
+    "Select City",
+    options=df["CITY"].unique(),
+    default=df["CITY"].unique()
+)
+
+filtered_df = df[df["CITY"].isin(cities)]
+
+# Total revenue
+total_revenue = filtered_df["REVENUE"].sum()
+
 st.metric("Total Revenue", total_revenue)
 
-# Revenue by city
-city_sales = df.groupby("city")["price"].sum().reset_index()
+# Sales by city
+city_sales = filtered_df.groupby("CITY")["REVENUE"].sum()
 
-fig_city = px.bar(city_sales, x="city", y="price", title="Revenue by City")
+st.subheader("Sales by City")
+st.bar_chart(city_sales)
 
-st.plotly_chart(fig_city)
+# Product orders
+product_orders = filtered_df.groupby("PRODUCT")["QUANTITY"].sum()
 
-# Top products
-product_sales = df.groupby("product")["price"].sum().reset_index()
+st.subheader("Product Orders")
+st.bar_chart(product_orders)
 
-fig_product = px.bar(product_sales, x="product", y="price", title="Top Products")
 
-st.plotly_chart(fig_product)
+daily_sales = filtered_df.groupby("ORDER_DATE")["REVENUE"].sum()
 
-# Orders over time
-orders_time = df.groupby("order_date").size().reset_index(name="orders")
+st.subheader("Daily Revenue Trend")
 
-fig_time = px.line(orders_time, x="order_date", y="orders", title="Orders Over Time")
+st.line_chart(daily_sales)
 
-st.plotly_chart(fig_time)
+total_orders = len(filtered_df)
+
+st.metric("Total Orders", total_orders)

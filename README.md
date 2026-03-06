@@ -1,30 +1,75 @@
-# Ecommerce Data Engineering Pipeline
+# E-Commerce Data Engineering Pipeline
 
-This project demonstrates a simple end-to-end data engineering pipeline.
+## Project Overview
 
-Technologies Used
-- Python
-- SQL
-- Snowflake
-- Databricks (concept simulation)
+This project demonstrates an end-to-end data engineering pipeline built using Python, Snowflake, Spark, and Streamlit.
 
-Pipeline Steps
-1. Data generation using Python
-2. Data ingestion
-3. Data transformation
-4. Loading into Snowflake
-5. Running SQL analytics queries
+The pipeline simulates an e-commerce system where order data is generated, stored in a cloud data warehouse, processed using Spark, and visualized through a dashboard.
 
-Project Structure
+---
 
-data/
-Raw dataset
+## Architecture
 
-ingestion/
-Python scripts to generate data
+![Architecture](architecture.png)
 
-transformation/
-Python scripts to clean data
+---
 
-warehouse/
-SQL scripts for tables and queries
+## Tech Stack
+
+Python  
+SQL  
+Snowflake  
+Apache Spark  
+Streamlit  
+GitHub
+
+---
+
+## Pipeline Steps
+
+1. Data Generation
+
+A Python script generates synthetic e-commerce order data.
+
+2. Data Storage
+
+Data is uploaded to Snowflake cloud data warehouse.
+
+3. Data Processing
+
+Spark is used to transform raw order data.
+
+4. Data Analysis
+
+SQL queries calculate business metrics like revenue and product demand.
+
+5. Visualization
+
+A Streamlit dashboard displays sales insights.
+
+---
+
+## Dashboard Features
+
+Total revenue KPI  
+Sales by city  
+Product demand  
+Interactive filters
+
+---
+
+## How to Run the Project
+
+Install dependencies
+
+pip install pandas pyspark snowflake-connector-python streamlit python-dotenv
+
+Run dashboard
+
+streamlit run dashboard/dashboard.py
+
+---
+
+## Author
+
+Gurashish Singh
